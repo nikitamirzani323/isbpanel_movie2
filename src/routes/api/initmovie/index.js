@@ -17,6 +17,6 @@ export async function post(event){
     const token = jsondata.token
     return {
         status:200,
-        body:{hello:'world',token:token}
+        body:{token:token}
     }
 }
