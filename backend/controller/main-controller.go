@@ -80,7 +80,19 @@ func Init(c *fiber.Ctx) error {
 	})
 }
 func Listmovie(c *fiber.Ctx) error {
-	hostname := c.Hostname()
+	type payload_listmovie struct {
+		Client_hostname string `json:"client_hostname"`
+	}
+	client := new(payload_listmovie)
+	if err := c.BodyParser(client); err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"status":  fiber.StatusBadRequest,
+			"message": err.Error(),
+			"record":  nil,
+		})
+	}
+
 	bearToken := c.Get("Authorization")
 	token := strings.Split(bearToken, " ")
 	render_page := time.Now()
@@ -133,7 +145,7 @@ func Listmovie(c *fiber.Ctx) error {
 			SetError(responseerror{}).
 			SetHeader("Content-Type", "application/json").
 			SetBody(map[string]interface{}{
-				"client_hostname": hostname,
+				"client_hostname": client.Client_hostname,
 			}).
 			Post(PATH + "api/movie")
 		if err != nil {

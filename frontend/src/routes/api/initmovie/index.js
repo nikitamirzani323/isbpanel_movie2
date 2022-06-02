@@ -1,8 +1,10 @@
+import { MY_GO_BACKEND_URL } from '$lib/Env';
 export async function post({request}){
+    const path_api = MY_GO_BACKEND_URL
     const object =  await request.json();
     const hostname = object.hostname
     console.log(hostname)
-    const resdata = await fetch("http://localhost:5000/api/initmovie", {
+    const resdata = await fetch(path_api+"/api/initmovie", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json',
