@@ -46,15 +46,27 @@ type Model_movievideo struct {
 }
 
 func Init(c *fiber.Ctx) error {
-	hostname := c.Hostname()
-	log.Println("Hostname: ", hostname)
+	type payload_init struct {
+		Client_hostname string `json:"client_hostname"`
+	}
+	client := new(payload_init)
+	if err := c.BodyParser(client); err != nil {
+		c.Status(fiber.StatusBadRequest)
+		return c.JSON(fiber.Map{
+			"status":  fiber.StatusBadRequest,
+			"message": err.Error(),
+			"record":  nil,
+		})
+	}
+
+	log.Println("HOSTNAME-CLIENT: ", client.Client_hostname)
 	render_page := time.Now()
 	axios := resty.New()
 	resp, err := axios.R().
 		SetResult(responseinit{}).
 		SetHeader("Content-Type", "application/json").
 		SetBody(map[string]interface{}{
-			"client_hostname": hostname,
+			"client_hostname": client.Client_hostname,
 		}).
 		Post(PATH + "api/init")
 	if err != nil {

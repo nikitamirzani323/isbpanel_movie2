@@ -1,12 +1,11 @@
 export async function post({request,url}){
     const object =  await request.json();
     const token = object.token
-    const hostname = url.host
-    console.log(token)
-    const resdata = await fetch("https://api.isbpanel.com/api/movie", {
+    const hostname = object.hostname
+    const resdata = await fetch("http://localhost:5000/api/listmovie", {
         method: "POST",
         headers: {
-            'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2NTQxNTkzOTYsIm5hbWUiOiJjVXJ7Y2wvaTpddnwxNiJ9.o4PUmAPLl3XtA291xh9S7X3c9V5abzZ-fqDogD1yCEU', 
+            Authorization: "Bearer " + token,
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({

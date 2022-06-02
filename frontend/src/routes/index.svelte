@@ -4,12 +4,14 @@
     if(browser){
         client_token = localStorage.getItem("token");
     }
-    export const load = async ({ fetch }) => {
+    export const load = async ({ fetch,url }) => {
         let listmovie = [];
         if(client_token == null){
             const res = await fetch("/api/initmovie", {
                 method: "POST",
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    hostname:url.host
+                }),
             })
             const record = await res.json();
             if(browser){
@@ -21,9 +23,10 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: "Bearer " + record.token,
                 },
-                body: JSON.stringify({}),
+                body: JSON.stringify({
+                    token:record.token
+                }),
             })
             const record2 = await res2.json();
             listmovie = record2.data
@@ -40,7 +43,8 @@
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    token:client_token
+                    token:client_token,
+                    hostname:url.host
                 }),
             })
             const record = await res.json();
