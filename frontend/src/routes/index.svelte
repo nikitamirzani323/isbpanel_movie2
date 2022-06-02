@@ -60,12 +60,31 @@
 </script>
 <script>
     export let listmovie;
+    const loaded = new Map();
+    function lazy(node, data) {
+		if (loaded.has(data.src)) {
+			node.setAttribute('src', data.src);
+		} else {
+			// simulate slow loading network
+			setTimeout(() => {
+				const img = new Image();
+				img.src = data.src;
+				img.onload = () => {
+					loaded.set(data.src, img);
+					node.setAttribute('src', data.src); 
+				};
+			}, 100);
+		}
+		return {
+			destroy(){} // noop
+		};
+	}
 </script>
 <svelte:head>
     <title>ISBFILM - KOLEKSI MOVIE</title>
 </svelte:head>
 {#each listmovie as rec}
-<div class="card w-full bg-base-300 text-neutral-content rounded-none mt-5">
+<section class="card w-full bg-base-300 text-neutral-content rounded-none mt-5">
     <div class="card-body p-0 mb-2">
         <h2 class="card-title border-b-2 border-pink-700 p-2">{rec.movie_category} </h2>
         <div class="grid grid-cols-2 lg:grid-cols-8 gap-2 p-2">
@@ -79,7 +98,9 @@
                         <span class=" text-sm">5.2</span>
                     </div>
                 </div>
-                <img src="{rec2.movie_thumbnail}" alt="{rec2.movie_title}">
+                <img class="w-full"
+                    use:lazy="{{src: rec2.movie_thumbnail}}" 
+                    src="https://imagedelivery.net/W-Usm3AjeE17sxpltvGRNA/fd0287a2-353d-4b47-9a6c-9c8df2ab3f00/public" alt="{rec2.movie_title}" >
                 <div class="flex flex-col h-20 w-full justify-between -mt-20">
                     <span class="">&nbsp;</span>
                     <span class="w-full self-end text-center hidden lg:block lg:text-xs">{rec2.movie_title}</span>
@@ -88,5 +109,5 @@
             {/each}
         </div>
     </div>
-</div>
+</section>
 {/each}
